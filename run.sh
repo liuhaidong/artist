@@ -1,0 +1,1 @@
+python main.py --data_path ./data/math_problems.json --output_dir ./output --model /home/liuhaidong/workspace/learn-ai/models/Qwen3-0.6B --batch_size 4 --group_size 8

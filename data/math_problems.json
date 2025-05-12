@@ -1,0 +1,13 @@
+[
+    {
+      "question": "Compute the integral \\int_0^1 \\frac{\\ln(1+x)}{x} \\, dx.",
+      "answer": "\\frac{\\pi^2}{12}",
+      "task_type": "math_reasoning"
+    },
+    {
+      "question": "Find all values of x that satisfy the equation x^3 - 6x^2 + 11x - 6 = 0.",
+      "answer": "x = 1, x = 2, x = 3",
+      "task_type": "math_reasoning"
+    }
+  ]
+  
