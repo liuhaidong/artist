@@ -1,6 +1,9 @@
 # ARTIST Framework Minimal Implementation Demo
 This is a minimal implementation of the ARTIST framework that demonstrates the core concepts of agentic reasoning with tool integration and reinforcement learning. This demo includes the essential components: policy model, tool execution, reward calculation, and GRPO optimization.
 
+Agentic Reasoning and Tool Integration for LLMs via Reinforcement Learning
+https://arxiv.org/abs/2505.01441
+
 Project Structure
 ```
 artist_demo/
