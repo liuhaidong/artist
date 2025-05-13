@@ -9,12 +9,17 @@ class RolloutEngine:
         self.tools = {tool.name: tool for tool in tools}
         self.config = config
         
-    def execute_rollout(self, prompt: str) -> Dict[str, Any]:
+    def execute_rollout(self, 
+                       prompt: str, 
+                       temperature: float = None, 
+                       do_sample: bool = True) -> Dict[str, Any]:
         """
         Execute a complete rollout for a given prompt.
         
         Args:
             prompt: The initial prompt to start the rollout
+            temperature: Temperature for generation
+            do_sample: Whether to sample or use greedy decoding
             
         Returns:
             Dict containing the complete rollout information
@@ -30,7 +35,11 @@ class RolloutEngine:
         
         while True:
             # Generate the next segment
-            response = self.policy_model.generate(current_prompt)
+            response = self.policy_model.generate(
+                current_prompt, 
+                temperature=temperature,
+                do_sample=do_sample
+            )
             full_response += response
             
             # Check if we've reached the answer
@@ -61,7 +70,7 @@ class RolloutEngine:
                 current_prompt = current_prompt + response
                 
             # Safety check to prevent infinite loops
-            if len(full_response) > 10000:  # Arbitrary limit
+            if len(full_response) > 10000 or tool_total_count > 10:  # Arbitrary limits
                 break
         
         # Extract the final answer
@@ -77,10 +86,28 @@ class RolloutEngine:
             "tool_total_count": tool_total_count
         }
         
-    def generate_multiple_rollouts(self, prompt: str, num_rollouts: int) -> List[Dict[str, Any]]:
-        """Generate multiple rollouts for GRPO."""
+    def generate_multiple_rollouts(self, 
+                                 prompt: str, 
+                                 num_rollouts: int,
+                                 temperature: float = None) -> List[Dict[str, Any]]:
+        """
+        Generate multiple rollouts for GRPO.
+        
+        Args:
+            prompt: The initial prompt
+            num_rollouts: Number of rollouts to generate
+            temperature: Temperature for generation
+            
+        Returns:
+            List of rollout data dictionaries
+        """
+        if temperature is None:
+            temperature = self.config.temperature
+            
         rollouts = []
         for _ in range(num_rollouts):
-            rollout = self.execute_rollout(prompt)
+            # Use a slightly different temperature for each rollout to increase diversity
+            temp_variation = temperature * (0.9 + 0.2 * random.random())
+            rollout = self.execute_rollout(prompt, temperature=temp_variation, do_sample=True)
             rollouts.append(rollout)
         return rollouts

@@ -1,38 +1,69 @@
 # tools/search_tool.py
-from .base_tool import BaseTool
+import requests
+import json
+from typing import Tuple
+import os
 
-class SearchTool(BaseTool):
+class SearchTool:
     """
-    Tool for simulating web search.
-    
-    In a real implementation, this would connect to a search API.
-    For this example, we'll use a simple mock.
+    Tool for searching information on the web.
     """
     
-    def __init__(self):
-        super().__init__(name="search")
-        self.search_db = {
-            "integral of ln(1+x)/x from 0 to 1": "The integral is \\(\\frac{\\pi^2}{12}\\).",
-            "derivative of x^2": "The derivative of x^2 is 2x.",
-            # Add more mock search results as needed
-        }
+    name = "search"
     
-    def execute(self, query: str) -> tuple[str, bool]:
+    def __init__(self, api_key=None):
         """
-        Execute a search query and return results.
+        Initialize the search tool.
         
         Args:
-            query: The search query
+            api_key: API key for the search service
+        """
+        # Use provided API key or get from environment
+        self.api_key = api_key or os.environ.get("SEARCH_API_KEY")
+        
+    def execute(self, query: str) -> Tuple[str, bool]:
+        """
+        Execute a search query and return the results.
+        
+        Args:
+            query: Search query
             
         Returns:
-            tuple: (search_results, success_flag)
+            Tuple of (results, success)
         """
-        # Normalize the query for lookup
-        normalized_query = query.lower().strip()
+        # For demonstration purposes, we'll simulate search results
+        # In a real implementation, you would call an actual search API
         
-        # Look for exact or partial matches
-        for key, value in self.search_db.items():
-            if key.lower() in normalized_query or normalized_query in key.lower():
-                return value, True
+        if not query or len(query.strip()) == 0:
+            return "Error: Empty search query", False
         
-        return "No relevant search results found.", False
+        try:
+            # Simulate search results for demonstration
+            # In a real implementation, replace this with an actual API call
+            results = self._simulate_search(query)
+            return results, True
+        except Exception as e:
+            return f"Error during search: {str(e)}", False
+    
+    def _simulate_search(self, query: str) -> str:
+        """
+        Simulate search results for demonstration purposes.
+        
+        Args:
+            query: Search query
+            
+        Returns:
+            Simulated search results
+        """
+        # This is just a placeholder - in a real implementation,
+        # you would call an actual search API like Google Custom Search, Bing, etc.
+        
+        # Some example responses for common queries
+        if "population" in query.lower():
+            return "Search results for population statistics:\n- World population: approximately 8 billion\n- US population: approximately 332 million\n- China population: approximately 1.4 billion"
+        elif "president" in query.lower():
+            return "Search results for president information:\n- The current US President is Joe Biden\n- The President of France is Emmanuel Macron\n- The President of Russia is Vladimir Putin"
+        elif "capital" in query.lower():
+            return "Search results for capital cities:\n- Capital of USA: Washington D.C.\n- Capital of UK: London\n- Capital of Japan: Tokyo\n- Capital of Australia: Canberra"
+        else:
+            return f"Search results for '{query}':\n- Found multiple relevant sources\n- Most sources agree that this is a complex topic\n- Recent information suggests various perspectives on this matter"

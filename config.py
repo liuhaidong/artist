@@ -23,6 +23,8 @@ class ARTISTConfig:
     # GRPO configuration
     clip_ratio: float = 0.2
     kl_coef: float = 0.1
+    max_grad_norm: float = 1.0
+    ppo_epochs: int = 4  # Number of optimization epochs per batch
     
     # Tool configuration
     available_tools: List[str] = None
